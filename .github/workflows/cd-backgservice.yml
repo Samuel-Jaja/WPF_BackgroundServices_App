@@ -1,0 +1,72 @@
+name: "App build and release workflow"
+
+on:
+ pull_request_target:
+  types:
+  - closed
+  branches: 
+   - main
+  #paths:
+  #- '**.cs'
+  #- '**.csproj'
+
+
+env:
+    #PROJECT_PATH: SEPAL.csproj
+
+jobs:
+ Deploy:
+   runs-on: windows-latest
+   if: github.event.pull_request.merged == true
+
+   steps:
+    - name: Fetch tag on PR body
+      id: tag-on-pr-merge
+      uses: David-Lor/action-tag-on-pr-merge@main
+      with:
+        push-tag: true
+        github-token:  ${{secrets.GITHUB_TOKEN}}
+        tag-regex: ^sepal-v?(\d+\.)?(\d+\.)?(\*|\d+)$  
+
+    - name: Print fetched tag in PR line
+      run: echo "${{ steps.tag-on-pr-merge.outputs.tag }}"
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+       dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ${{env.PROJECT_PATH}}
+
+    - name: Build project 
+      run: dotnet build ${{env.PROJECT_PATH}} -c Release --no-restore
+
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Publish package
+      run: dotnet publish ${{env.PROJECT_PATH}} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --no-build
+
+    - name: Create release
+      uses: actions/create-release@v1
+      id: create_release
+      if: "${{ steps.tag-on-pr-merge.outputs.tag !=''}}"
+
+      env:
+       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      with:
+       #tag_name: ${{github.ref}}
+       tag_name: ${{ steps.tag-on-pr-merge.outputs.tag }}
+       release_name: ${{ steps.tag-on-pr-merge.outputs.tag }}
+
+    - name: Publish artifact(.exe, zip, .tar.gz)
+      uses: csexton/release-asset-action@v2
+      with:
+       github-token: ${{secrets.GITHUB_TOKEN}}
+       pattern: bin/Release/net6.0-windows/win-x64/publish/*.exe
+       release-url: ${{steps.create_release.outputs.upload_url}}
