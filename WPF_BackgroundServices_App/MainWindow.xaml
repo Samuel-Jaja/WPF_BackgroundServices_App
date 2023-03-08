@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_BackgroundServices_App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="450" Width="900" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="CadetBlue" FontWeight="Bold" FontSize="40">Hello, I am Background Services </TextBlock>
+        <StackPanel>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="35" Foreground="Blue" Margin="20">CypherCrescent SEPAL BUILDS SELF-SERVICE</TextBlock>
+        </StackPanel>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="CadetBlue" FontWeight="Bold" FontSize="30">Hello, I am Background Services </TextBlock>
     </Grid>
 </Window>
