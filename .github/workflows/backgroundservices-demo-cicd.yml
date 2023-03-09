@@ -1,0 +1,56 @@
+name: "BackgroundService Build and Release workflow"
+
+on:
+  push:
+    tags:
+      - "BackgroundService-beta/v*"
+  pull_request:
+    tags:
+      - "BackgroundService-beta/v*"
+
+env:
+  PROJECT-PATH: WPF_BackgroundServices_App/WPF_BackgroundServices_App.csproj
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Install .Net core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: Build
+      run:  dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore  -p:PublishSingleFile=true
+
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Publish 
+      run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+
+    - name: Create a Release
+      uses: actions/create-release@v1
+      id: create_release
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+
+    - name: Upload to release
+      uses: csexton/release-asset-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        pattern: WPF_BackgroundServices_App/bin/Release/net6.0-windows/*.exe
+        release-url: ${{ steps.create_release.outputs.upload_url }}
