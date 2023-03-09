@@ -9,6 +9,8 @@
     <Grid>
         <StackPanel>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="35" Foreground="Blue" Margin="20">CypherCrescent SEPAL BUILDS SELF-SERVICE</TextBlock>
+            <Button Width="50" Height="50" Content="click me"/>
+
         </StackPanel>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="CadetBlue" FontWeight="Bold" FontSize="30">Hello, I am Background Services </TextBlock>
     </Grid>
