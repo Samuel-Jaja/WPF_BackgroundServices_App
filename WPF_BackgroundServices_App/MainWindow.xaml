@@ -8,8 +8,9 @@
         Title="MainWindow" Height="450" Width="900" WindowStartupLocation="CenterScreen">
     <Grid>
         <StackPanel>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="35" Foreground="Blue" Margin="20">CypherCrescent SEPAL BUILDS SELF-SERVICE</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="35" Margin="20">CypherCrescent SEPAL BUILDS SELF-SERVICE</TextBlock>
         </StackPanel>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="CadetBlue" FontWeight="Bold" FontSize="30">Hello, I am Background Services </TextBlock>
+        <TextBlock Grid.Row="3" FontSize="12" Padding="10" Text="CypherCrescent Limited ©2023" Foreground="Blue" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
